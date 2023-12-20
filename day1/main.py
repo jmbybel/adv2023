@@ -19,7 +19,24 @@ def main():
     file = askopenfile()
     if file is not None:
         inputArray = file.read().splitlines()
-        findAndAddNumbers(inputArray)
+        firstHalfResult = findAndAddNumbers(inputArray, False)
+        print(firstHalfResult)
+        secondHalfResult = findAndAddNumbers(inputArray, True)
+        print(secondHalfResult)
+
+
+#1A - only parse out actual numbers - first and last digit are appended as a string then converted
+#currentDigit should == firstDigit if its the only one.
+#1B - non-destructive finds (not token replace) on each of the strings or integers
+def findAndAddNumbers(input, processStrings):
+    rollingTotal = 0
+    for line in input:
+
+        lineValue = findFirstAndLastAsSingleInteger(line, processStrings)
+        
+        rollingTotal = rollingTotal + lineValue
+
+    return rollingTotal
 
 
     
@@ -27,7 +44,7 @@ def main():
 # do a .find on the string, then also do a .find on the iterator itself.
 # lowestMatchIndex and highestMatchIndex are appended and parsed to string. 
 # test/input data did not have any rows missing data so don't need to handle -1 or zero
-def findFirstAndLastAsSingleInteger(line):
+def findFirstAndLastAsSingleInteger(line, processStrings):
     lowestMatchIndex = -1
     lowestMatchTextValue = ''
     highestMatchIndex = -1
@@ -39,30 +56,31 @@ def findFirstAndLastAsSingleInteger(line):
             continue
 
         #This is fine for first match, but NOT for last match
-        firstStringIndex= line.find(numberString)
         firstIntIndex = line.find(str(indexIterator))
 
-
-        #ugly doubled if. could've regexed it but it was late.
-        # no condition where setting lowestMatchIndex (or highestMatchIndex) here would change the result of the second if
-        #TODO update this to also supply the part 1 solution separately (just pass a variable to skip the string-specific rules)
-        if firstStringIndex > -1 and (firstStringIndex < lowestMatchIndex or lowestMatchIndex == -1):
-            lowestMatchIndex = firstStringIndex
-            lowestMatchTextValue = str(indexIterator)
+        #Do the straight integer detection work first.
         if firstIntIndex > -1 and (firstIntIndex < lowestMatchIndex or lowestMatchIndex == -1):
             lowestMatchIndex = firstIntIndex
             lowestMatchTextValue = str(indexIterator)
         
-        finalStringIndex = findLatestMatchingPattern(line, numberString)
         finalIntIndex = findLatestMatchingPattern(line, str(indexIterator))
 
-        
-        if finalStringIndex > highestMatchIndex:
-            highestMatchIndex = finalStringIndex
-            highestMatchTextValue = str(indexIterator)
         if finalIntIndex > highestMatchIndex:
             highestMatchIndex = finalIntIndex
             highestMatchTextValue = str(indexIterator)
+
+        
+        #Finding an integer match before even looking at the string matches won't affect results as its a non-destructive process
+        #so handle strings entirely separately, plus preserve existing work for first half of puzzle - can refactor into a different function later
+        if processStrings:
+            firstStringIndex= line.find(numberString)
+            finalStringIndex = findLatestMatchingPattern(line, numberString)
+            if firstStringIndex > -1 and (firstStringIndex < lowestMatchIndex or lowestMatchIndex == -1):
+                lowestMatchIndex = firstStringIndex
+                lowestMatchTextValue = str(indexIterator)
+            if finalStringIndex > highestMatchIndex:
+                highestMatchIndex = finalStringIndex
+                highestMatchTextValue = str(indexIterator)
     
     return int(str(lowestMatchTextValue) + str(highestMatchTextValue))
 
@@ -78,21 +96,6 @@ def findLatestMatchingPattern(line, numberString):
         startIndex = foundIndex
     return startIndex
 
-
-
-#1A - only parse out actual numbers - first and last digit are appended as a string then converted
-#currentDigit should == firstDigit if its the only one.
-#1B - non-destructive finds (not token replace) on each of the strings or integers
-def findAndAddNumbers(input):
-    rollingTotal = 0
-    for line in input:
-
-        lineValue = findFirstAndLastAsSingleInteger(line)
-        print(lineValue)
-        
-        rollingTotal = rollingTotal + lineValue
-
-    print(rollingTotal)
 
 
 if __name__ == '__main__':
