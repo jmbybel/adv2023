@@ -45,6 +45,7 @@ def findFirstAndLastAsSingleInteger(line):
 
         #ugly doubled if. could've regexed it but it was late.
         # no condition where setting lowestMatchIndex (or highestMatchIndex) here would change the result of the second if
+        #TODO update this to also supply the part 1 solution separately (just pass a variable to skip the string-specific rules)
         if firstStringIndex > -1 and (firstStringIndex < lowestMatchIndex or lowestMatchIndex == -1):
             lowestMatchIndex = firstStringIndex
             lowestMatchTextValue = str(indexIterator)
