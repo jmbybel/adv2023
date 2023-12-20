@@ -29,7 +29,7 @@ def main():
 #   Game #: a red, b blue, c green; d red, e blue, f green
 #   end of line instead of a final semicolon
 #   blank for no cubes of a type
-# returns an array containing a dictionary(or yaml-equivalent) for Game ID + the r/g/b values for that game
+# returns an array containing a dictionary(or yaml-equivalent) for Game ID + the r/g/b cube values for that game
 def parseGames(inputList):
     gameIdsAndDictionaries = []
     for line in inputList:
@@ -89,7 +89,7 @@ def validateGamesForMaxCubes(arrayOfGameIdsAndDictionaries):
     
     return rollingTotal
 
-#2b: find the minimum cubes of each color per game
+#2b: find the minimum cubes of each color per game. Stop tracking gameID as it's useless for the second half of the puzzle
 def validateGamesForMinCubes(arrayOfGameIdsAndDictionaries): 
     minimumCubeAmountDictionaries = []
 
